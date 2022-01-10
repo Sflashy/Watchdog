@@ -1,5 +1,5 @@
 # Watchdog
-an price tracer for warframe price parts
+an price tracer for warframe prime parts
 
 # Screenshots
 ![MainWindow](/Docs/images/MainWindow.png)
