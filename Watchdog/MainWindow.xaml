@@ -60,7 +60,7 @@
         <DataGrid Grid.Row="2" x:Name="DataGrid" Background="Transparent" AutoGenerateColumns="False" IsReadOnly="True" Foreground="#FFBEBEBE" Visibility="Collapsed">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-                <DataGridTextColumn Header="Price" Binding="{Binding Price}" SortDirection="Descending"/>
+                <DataGridTextColumn Header="Price" Binding="{Binding Price}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
