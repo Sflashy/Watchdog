@@ -33,6 +33,7 @@ namespace Watchdog
             UpdateBegin();
             var data = await HttpClient.Request("https://drops.warframestat.us/data/relics.json");
             Progressbar.IsIndeterminate = false;
+            Progressbar.Value = 0;
             Progressbar.Maximum = data.relics.Count;
             foreach (var relic in data.relics)
             {
