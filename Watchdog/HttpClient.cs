@@ -10,13 +10,7 @@ namespace Watchdog
 {
     public static class HttpClient
     {
-        public enum RequestType
-        {
-            Api,
-            Body
-        }
-
-        public static async Task<dynamic> Request(string url, RequestType requestType)
+        public static async Task<dynamic> Request(string url)
         {
             using (var httpClient = new System.Net.Http.HttpClient())
             {
@@ -27,16 +21,16 @@ namespace Watchdog
                 {
                     await Task.Delay(5000);
                     response = await httpClient.GetAsync(url);
-
                 }
-                switch (requestType)
+
+                try
                 {
-                    case RequestType.Api:
-                        return JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result);
-                    case RequestType.Body:
-                        return response.Content.ReadAsStringAsync().Result;
-                    default:
-                        return null;
+                    return JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result);
+                }
+                catch (Exception)
+                {
+
+                    return null;
                 }
             }
         }

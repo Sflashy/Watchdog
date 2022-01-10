@@ -27,7 +27,7 @@ namespace Watchdog
         }
         public async void Update()
         {
-            RefreshButton.IsEnabled = false;
+            UpdateBegin();
             var data = await RelicManager.GetRelics();
             foreach (var relic in data.relics)
             {
@@ -48,12 +48,25 @@ namespace Watchdog
                     Items.Add(item);
                 }
             }
+            UpdateEnd();
+        }
+
+        private void UpdateEnd()
+        {
             DataGrid.ItemsSource = Items;
             DataGrid.Visibility = Visibility.Visible;
             Progressbar.Visibility = Visibility.Collapsed;
             RefreshButton.IsEnabled = true;
         }
 
+        private void UpdateBegin()
+        {
+            duplicate.Clear();
+            Items.Clear();
+            RefreshButton.IsEnabled = false;
+            DataGrid.Visibility = Visibility.Collapsed;
+            Progressbar.Visibility = Visibility.Visible;
+        }
         private void ToggleTopMost(object sender, MouseButtonEventArgs e)
         {
             Topmost = !Topmost;

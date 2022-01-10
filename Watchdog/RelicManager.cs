@@ -11,7 +11,7 @@ namespace Watchdog
     {
         public static async Task<dynamic> GetRelics()
         {
-            return await HttpClient.Request("https://drops.warframestat.us/data/relics.json", HttpClient.RequestType.Api);
+            return await HttpClient.Request("https://drops.warframestat.us/data/relics.json");
         }
 
         public static async Task<int> GetItemPrice(string itemName)
@@ -19,7 +19,7 @@ namespace Watchdog
             itemName = itemName.Replace(" ", "_").ToLower().Replace("&", "and");
             if(Regex.Match(itemName, @"chassis|system|neuroptics|wings").Success) itemName = itemName.Replace("_blueprint", "");
             var highestPrice = 0;
-            dynamic data = await HttpClient.Request($"https://api.warframe.market/v1/items/{itemName}/statistics", HttpClient.RequestType.Api);
+            dynamic data = await HttpClient.Request($"https://api.warframe.market/v1/items/{itemName}/statistics");
             if (data == null) return 0;
             foreach (var item in data.payload.statistics_live["48hours"])
             {

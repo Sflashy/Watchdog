@@ -13,7 +13,6 @@
         TextOptions.TextRenderingMode="Auto" 
         Foreground="#DDBEBEBE" 
         ResizeMode="CanResizeWithGrip"
-        Topmost="True"
         AllowsTransparency="True"
         WindowStyle="None"
         MaxWidth="293"
