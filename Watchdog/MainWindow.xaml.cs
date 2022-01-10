@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -28,7 +31,7 @@ namespace Watchdog
         public async void Update()
         {
             UpdateBegin();
-            var data = await RelicManager.GetRelics();
+            var data = await HttpClient.Request("https://drops.warframestat.us/data/relics.json");
             foreach (var relic in data.relics)
             {
                 if (relic.state != "Intact") continue;
@@ -44,7 +47,7 @@ namespace Watchdog
                     duplicate.Add(itemName);
                     var item = new Item();
                     item.Name = itemName;
-                    item.Price = await RelicManager.GetItemPrice(itemName);
+                    item.Price = await GetItemPrice(itemName);
                     Items.Add(item);
                 }
             }
@@ -56,14 +59,12 @@ namespace Watchdog
             DataGrid.ItemsSource = Items;
             DataGrid.Visibility = Visibility.Visible;
             Progressbar.Visibility = Visibility.Collapsed;
-            RefreshButton.IsEnabled = true;
         }
 
         private void UpdateBegin()
         {
             duplicate.Clear();
             Items.Clear();
-            RefreshButton.IsEnabled = false;
             DataGrid.Visibility = Visibility.Collapsed;
             Progressbar.Visibility = Visibility.Visible;
         }
@@ -82,9 +83,37 @@ namespace Watchdog
             Application.Current.Shutdown();
         }
 
-        private void Refresh(object sender, RoutedEventArgs e)
+
+        public static async Task<int> GetItemPrice(string itemName)
         {
-            Update();
+            itemName = itemName.Replace(" ", "_").ToLower().Replace("&", "and");
+            if (Regex.Match(itemName, @"chassis|system|neuroptics|wings").Success) itemName = itemName.Replace("_blueprint", "");
+            var highestPrice = 0;
+            dynamic data = await HttpClient.Request($"https://api.warframe.market/v1/items/{itemName}/statistics");
+            if (data == null) return 0;
+            foreach (var item in data.payload.statistics_live["48hours"])
+            {
+                if (item.min_price > highestPrice) highestPrice = item.min_price;
+            }
+            return highestPrice;
+        }
+
+        private void Search_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var foundItems = new List<Item>();
+            foreach (var item in Items)
+            {
+                if (item.Name.ToLower().Contains(Search.Text.ToLower()))
+                {
+                    foundItems.Add(item);
+                }
+            }
+            DataGrid.ItemsSource = foundItems;
+        }
+
+        private void KeyEvents(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F5) Update();
         }
     }
 }
