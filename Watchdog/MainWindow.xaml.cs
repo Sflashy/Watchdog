@@ -32,8 +32,11 @@ namespace Watchdog
         {
             UpdateBegin();
             var data = await HttpClient.Request("https://drops.warframestat.us/data/relics.json");
+            Progressbar.IsIndeterminate = false;
+            Progressbar.Maximum = data.relics.Count;
             foreach (var relic in data.relics)
             {
+                Progressbar.Value++;
                 if (relic.state != "Intact") continue;
                 foreach (var reward in relic.rewards)
                 {
@@ -58,7 +61,7 @@ namespace Watchdog
         {
             DataGrid.ItemsSource = Items;
             DataGrid.Visibility = Visibility.Visible;
-            Progressbar.Visibility = Visibility.Collapsed;
+            UpdateGrid.Visibility = Visibility.Collapsed;
         }
 
         private void UpdateBegin()
@@ -66,7 +69,7 @@ namespace Watchdog
             duplicate.Clear();
             Items.Clear();
             DataGrid.Visibility = Visibility.Collapsed;
-            Progressbar.Visibility = Visibility.Visible;
+            UpdateGrid.Visibility = Visibility.Visible;
         }
         private void ToggleTopMost(object sender, MouseButtonEventArgs e)
         {

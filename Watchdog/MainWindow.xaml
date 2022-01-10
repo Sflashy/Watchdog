@@ -42,6 +42,7 @@
             </Grid>
         </Border>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+            
             <Button  Height="30"  Width="30"  Padding="0"  Style="{StaticResource MaterialDesignFlatButton}" Click="MinimizeApp">
                 <wpf:PackIcon Kind="WindowMinimize"/>
             </Button>
@@ -51,17 +52,16 @@
             </Button>
         </StackPanel>
 
-        <Grid x:Name="Progressbar" Grid.RowSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="True" Height="40" Width="40"/>
+        <Grid x:Name="UpdateGrid" Grid.RowSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <ProgressBar x:Name="Progressbar" Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="True" Height="40" Width="40"/>
             <TextBlock Text="Updating..." Margin="0,85,0,0"/>
         </Grid>
         <TextBox Name="Search" wpf:HintAssist.Hint="Search..." Grid.Row="1" IsTabStop="False" TextChanged="Search_TextChanged"/>
-        <DataGrid Grid.Row="2" x:Name="DataGrid" Background="Transparent" IsReadOnly="True" Foreground="#FFBEBEBE" Visibility="Collapsed">
-            <DataGrid.ColumnHeaderStyle>
-                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
-                    <Setter Property="Foreground" Value="#FFDEDEDE"/>
-                </Style>
-            </DataGrid.ColumnHeaderStyle>
+        <DataGrid Grid.Row="2" x:Name="DataGrid" Background="Transparent" AutoGenerateColumns="False" IsReadOnly="True" Foreground="#FFBEBEBE" Visibility="Collapsed">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Price" Binding="{Binding Price}" SortDirection="Descending"/>
+            </DataGrid.Columns>
         </DataGrid>
     </Grid>
 </Window>
