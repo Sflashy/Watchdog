@@ -1,8 +1,6 @@
-# Watchdog
-an price tracer for warframe prime parts
-
 # Screenshots
-![MainWindow](/Docs/images/MainWindow.png)
+![ItemsTab](/Docs/images/Items.png)
+![RivensTab](/Docs/images/Rivens.png)
 
 # Credits
 Author: Sflashy#3804\
