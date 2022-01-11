@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,8 +7,6 @@ namespace Watchdog
 {
     public partial class MainWindow : Window
     {
-        private static List<Item> Items = new List<Item>();
-        private static List<string> duplicate = new List<string>();
         public MainWindow()
         {
             InitializeComponent();
@@ -26,57 +19,9 @@ namespace Watchdog
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Update();
+            AppManager.UpdateItems();
+            AppManager.UpdateRivens();
         }
-        public async void Update()
-        {
-            UpdateBegin();
-            var data = await HttpClient.Request("https://drops.warframestat.us/data/relics.json");
-            Progressbar.IsIndeterminate = false;
-            Progressbar.Value = 0;
-            Progressbar.Maximum = data.relics.Count;
-            foreach (var relic in data.relics)
-            {
-                Progressbar.Value++;
-                if (relic.state != "Intact") continue;
-                foreach (var reward in relic.rewards)
-                {
-                    var itemName = reward.itemName.ToString();
-                    if(File.Exists("blacklist.txt"))
-                    {
-                        if (File.ReadAllText("blacklist.txt").Contains(itemName)) continue;
-                    }
-                    if (reward.rarity != "Rare") continue;
-                    if (duplicate.Contains(itemName)) continue;
-                    duplicate.Add(itemName);
-                    var item = new Item();
-                    item.Name = itemName;
-                    item.Price = await GetItemPrice(itemName);
-                    Items.Add(item);
-                }
-            }
-            UpdateEnd();
-        }
-
-        private void UpdateEnd()
-        {
-            DataGrid.ItemsSource = Items;
-            DataGrid.Visibility = Visibility.Visible;
-            UpdateGrid.Visibility = Visibility.Collapsed;
-        }
-
-        private void UpdateBegin()
-        {
-            duplicate.Clear();
-            Items.Clear();
-            DataGrid.Visibility = Visibility.Collapsed;
-            UpdateGrid.Visibility = Visibility.Visible;
-        }
-        private void ToggleTopMost(object sender, MouseButtonEventArgs e)
-        {
-            Topmost = !Topmost;
-        }
-
         private void MinimizeApp(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
@@ -87,37 +32,48 @@ namespace Watchdog
             Application.Current.Shutdown();
         }
 
-
-        public static async Task<int> GetItemPrice(string itemName)
+        private void RivenSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
-            itemName = itemName.Replace(" ", "_").ToLower().Replace("&", "and");
-            if (Regex.Match(itemName, @"chassis|system|neuroptics|wings").Success) itemName = itemName.Replace("_blueprint", "");
-            var highestPrice = 0;
-            dynamic data = await HttpClient.Request($"https://api.warframe.market/v1/items/{itemName}/statistics");
-            if (data == null) return 0;
-            foreach (var item in data.payload.statistics_live["48hours"])
+            var foundItems = new List<Riven>();
+            foreach (var riven in AppManager.RivenList)
             {
-                if (item.min_price > highestPrice) highestPrice = item.min_price;
+                if(!string.IsNullOrEmpty(riven.Compatibility) && riven.Compatibility.ToLower().Contains(RivenSearch.Text.ToLower()))
+                {
+                    foundItems.Add(riven);
+                }
             }
-            return highestPrice;
+            if(!string.IsNullOrEmpty(RivenSearch.Text))
+            {
+                RivensDataGrid.ItemsSource = foundItems;
+            } else
+            {
+                RivensDataGrid.ItemsSource = AppManager.RivenList;
+            }
         }
 
-        private void Search_TextChanged(object sender, TextChangedEventArgs e)
+        private void ItemSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
             var foundItems = new List<Item>();
-            foreach (var item in Items)
+            foreach (var item in AppManager.ItemList)
             {
-                if (item.Name.ToLower().Contains(Search.Text.ToLower()))
+                if (!string.IsNullOrEmpty(item.Name) && item.Name.ToLower().Contains(ItemSearch.Text.ToLower()))
                 {
                     foundItems.Add(item);
                 }
             }
-            DataGrid.ItemsSource = foundItems;
+            if (!string.IsNullOrEmpty(ItemSearch.Text))
+            {
+                ItemsDataGrid.ItemsSource = foundItems;
+            }
+            else
+            {
+                ItemsDataGrid.ItemsSource = AppManager.ItemList;
+            }
         }
 
-        private void KeyEvents(object sender, KeyEventArgs e)
+        private void AlwaysOnTop(object sender, RoutedEventArgs e)
         {
-            if (e.Key == Key.F5) Update();
+            Topmost = !Topmost;
         }
     }
 }

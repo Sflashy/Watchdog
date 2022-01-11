@@ -3,11 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:Watchdog"
         mc:Ignorable="d"
         Title="MainWindow" 
         FontFamily="Roboto"
-        FontSize="16"
         FontWeight="Medium"
         TextOptions.TextFormattingMode="Ideal" 
         TextOptions.TextRenderingMode="Auto" 
@@ -15,53 +15,72 @@
         ResizeMode="CanResizeWithGrip"
         AllowsTransparency="True"
         WindowStyle="None"
-        MaxWidth="293"
-        MinWidth="293"
-        Width="293"
-        MaxHeight="460"
-        MinHeight="140"
+        Width="790"
+        MaxWidth="790"
         Height="460"
-        KeyDown="KeyEvents"
+        MinHeight="140"
         WindowStartupLocation="CenterScreen"
         Loaded="Window_Loaded"
-        xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
         MouseLeftButtonDown="DragWindow">
+    
     <Window.Background>
-        <SolidColorBrush Color="#1e1e1e" Opacity="0.8"/>
+        <SolidColorBrush Color="#1e1e1e" Opacity="0.9"/>
     </Window.Background>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border BorderBrush="#DDBEBEBE" BorderThickness="0,0,0,2">
             <Grid Margin="5">
-                <wpf:PackIcon Kind="EyeCircle" Margin="0,1,0,0" Height="17" Width="17" MouseLeftButtonDown="ToggleTopMost"/>
+                <materialDesign:PackIcon Kind="EyeCircle" Margin="0,1,0,0" Height="17" Width="17"/>
                 <TextBlock Text="Watchdog" Margin="20,0,0,0" FontSize="17"/>
             </Grid>
         </Border>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+
+            <Button  Height="30"  Width="30"  Padding="0"  Style="{DynamicResource MaterialDesignFlatButton}" Click="AlwaysOnTop">
+                <materialDesign:PackIcon Kind="Pin"/>
+            </Button>
             
-            <Button  Height="30"  Width="30"  Padding="0"  Style="{StaticResource MaterialDesignFlatButton}" Click="MinimizeApp">
-                <wpf:PackIcon Kind="WindowMinimize"/>
+            <Button  Height="30"  Width="30"  Padding="0"  Style="{DynamicResource MaterialDesignFlatButton}" Click="MinimizeApp">
+                <materialDesign:PackIcon Kind="WindowMinimize"/>
             </Button>
 
-            <Button Height="30"  Width="30" Padding="0"  Style="{StaticResource MaterialDesignFlatButton}" Click="ExitApp">
-                <wpf:PackIcon Kind="Close"/>
+            <Button Height="30"  Width="30" Padding="0"  Style="{DynamicResource MaterialDesignFlatButton}" Click="ExitApp">
+                <materialDesign:PackIcon Kind="Close"/>
             </Button>
         </StackPanel>
-
-        <Grid x:Name="UpdateGrid" Grid.RowSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <ProgressBar x:Name="Progressbar" Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="True" Height="40" Width="40"/>
-            <TextBlock Text="Updating..." Margin="0,85,0,0"/>
-        </Grid>
-        <TextBox Name="Search" wpf:HintAssist.Hint="Search..." Grid.Row="1" IsTabStop="False" TextChanged="Search_TextChanged"/>
-        <DataGrid Grid.Row="2" x:Name="DataGrid" Background="Transparent" AutoGenerateColumns="False" IsReadOnly="True" Foreground="#FFBEBEBE" Visibility="Collapsed">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-                <DataGridTextColumn Header="Price" Binding="{Binding Price}"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <TabControl Grid.Row="1" Style="{StaticResource MaterialDesignNavigatilRailTabControl}" Background="Transparent">
+            <TabItem IsSelected="True" Width="50" Height="50">
+                <TabItem.Header>
+                    <Image Source="item.png" Height="20"/>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Name="LoadingGrid" Grid.RowSpan="2">
+                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="True" Height="55" Width="40"/>
+                    </Grid>
+                    <TextBox Name="ItemSearch" materialDesign:HintAssist.Hint="search item (gara prime e.g)" TextChanged="ItemSearch_TextChanged" FontSize="14" Foreground="#FFBEBEBE" Height="35" VerticalContentAlignment="Center" />
+                    <DataGrid x:Name="ItemsDataGrid" Grid.Row="1" FontSize="14" Background="Transparent" IsReadOnly="True" Foreground="#FFBEBEBE" Visibility="Collapsed"/>
+                </Grid>
+            </TabItem>
+            <TabItem Width="50" Height="50">
+                <TabItem.Header>
+                    <Image Source="riven.png" Height="20"/>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBox Name="RivenSearch" materialDesign:HintAssist.Hint="search riven (nataruk e.g)" FontSize="14" Foreground="#FFBEBEBE" TextChanged="RivenSearch_TextChanged" Height="35" VerticalContentAlignment="Center" />
+                    <DataGrid x:Name="RivensDataGrid" Grid.Row="1" FontSize="14" Background="Transparent" IsReadOnly="True" Foreground="#FFBEBEBE"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
