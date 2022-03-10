@@ -1,4 +1,4 @@
-﻿namespace Watchdog
+﻿namespace Watchdog.Data
 {
     public class Riven
     {

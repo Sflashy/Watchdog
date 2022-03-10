@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Watchdog.Data;
 
 namespace Watchdog
 {
@@ -10,6 +13,8 @@ namespace Watchdog
         public MainWindow()
         {
             InitializeComponent();
+            AppManager.Update.Items();
+            AppManager.Update.Rivens();
         }
 
         private void DragWindow(object sender, MouseButtonEventArgs e)
@@ -17,11 +22,6 @@ namespace Watchdog
             DragMove();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            AppManager.UpdateItems();
-            AppManager.UpdateRivens();
-        }
         private void MinimizeApp(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
@@ -32,48 +32,38 @@ namespace Watchdog
             Application.Current.Shutdown();
         }
 
-        private void RivenSearch_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            var foundItems = new List<Riven>();
-            foreach (var riven in AppManager.RivenList)
-            {
-                if(!string.IsNullOrEmpty(riven.Compatibility) && riven.Compatibility.ToLower().Contains(RivenSearch.Text.ToLower()))
-                {
-                    foundItems.Add(riven);
-                }
-            }
-            if(!string.IsNullOrEmpty(RivenSearch.Text))
-            {
-                RivensDataGrid.ItemsSource = foundItems;
-            } else
-            {
-                RivensDataGrid.ItemsSource = AppManager.RivenList;
-            }
-        }
-
-        private void ItemSearch_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            var foundItems = new List<Item>();
-            foreach (var item in AppManager.ItemList)
-            {
-                if (!string.IsNullOrEmpty(item.Name) && item.Name.ToLower().Contains(ItemSearch.Text.ToLower()))
-                {
-                    foundItems.Add(item);
-                }
-            }
-            if (!string.IsNullOrEmpty(ItemSearch.Text))
-            {
-                ItemsDataGrid.ItemsSource = foundItems;
-            }
-            else
-            {
-                ItemsDataGrid.ItemsSource = AppManager.ItemList;
-            }
-        }
-
         private void AlwaysOnTop(object sender, RoutedEventArgs e)
         {
             Topmost = !Topmost;
+        }
+
+        private void ChangeWindowState(object sender, MouseButtonEventArgs e)
+        {
+            WindowState = (WindowState == WindowState.Maximized) ? WindowState.Normal : WindowState.Maximized;
+        }
+
+        private void MaximizeWindow(object sender, RoutedEventArgs e)
+        {
+            ChangeWindowState(null, null);
+        }
+
+        private void ChangeFrame(object sender, RoutedEventArgs e)
+        {
+            if(MainFrame.Tag.ToString() == "Items")
+            {
+                MainFrame.Source = new Uri("Rivens.xaml", UriKind.RelativeOrAbsolute);
+                MainFrame.Tag = "Rivens";
+            } else
+            {
+                MainFrame.Source = new Uri("Items.xaml", UriKind.RelativeOrAbsolute);
+                MainFrame.Tag = "Items";
+            }
+
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Source = new Uri("Items.xaml", UriKind.RelativeOrAbsolute);
         }
     }
 }

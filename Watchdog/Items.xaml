@@ -1,0 +1,38 @@
+﻿<Page x:Class="Watchdog.Items"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d"
+      FontFamily="Roboto"
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="ItemPage">
+
+    <Grid>
+        <materialDesign:Transitioner SelectedIndex="0" AutoApplyTransitionOrigins="True">
+            <materialDesign:TransitionerSlide OpeningEffect="{materialDesign:TransitionEffect FadeIn}">
+                <materialDesign:TransitionerSlide.OpeningEffects>
+                    <materialDesign:TransitionEffect Kind="FadeIn" Duration="0:0:0.8" />
+                </materialDesign:TransitionerSlide.OpeningEffects>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBox Name="ItemSearch" Padding="3" Height="40" materialDesign:HintAssist.Hint="search item (gara prime e.g)" TextChanged="ItemSearch_TextChanged" FontSize="15" Foreground="#FFBEBEBE" VerticalContentAlignment="Center" />
+
+                    <DataGrid x:Name="ItemsDataGrid" Grid.Row="1" HorizontalGridLinesBrush="#DDBEBEBE" FontSize="15" Background="Transparent" IsReadOnly="True" Foreground="#FFBEBEBE">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                <Setter Property="Foreground" Value="#FFBEBEBE"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                    </DataGrid>
+                </Grid>
+            </materialDesign:TransitionerSlide>
+        </materialDesign:Transitioner>
+        
+    </Grid>
+</Page>
